@@ -1,4 +1,5 @@
-# -D_DEFAULT_SOURCE IS FOR PCAP LIBRARY TYPES
+# -D_DEFAULT_SOURCE is for pcap.h library, because it was throwing errors on merlin (unknown types u_int, u_char ..)
+#	https://stackoverflow.com/questions/15393905/c-pcap-library-unknown-types-error?noredirect=1
 CFLAGS = -Wall -Wextra -std=c99 -D_DEFAULT_SOURCE 
 TARGET = p2nprobe
 
