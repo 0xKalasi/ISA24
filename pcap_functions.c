@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <pcap/pcap.h>
-
-#include <netinet/ip.h>    // struct ip
-#include <netinet/tcp.h>   // struct tcphdr
-#include <netinet/ether.h> // struct ether_header
-#include <arpa/inet.h>     // ntohs, inet_ntoa
+#include "pcap_functions.h"
 
 pcap_t *createHandle(const char *file)
 {
@@ -27,9 +19,16 @@ void closeHandle(pcap_t *pcapHandle)
     pcap_close(pcapHandle);
 }
 
+/*
 void packetHandler(u_char *userData, const struct pcap_pkthdr *header, const u_char *packet)
 {
-    int *packetCount = (int *)userData;
+    packetHandlerArgs_t *args = (packetHandlerArgs_t *)userData;
+
+    flow_t *flowsArray = args->array;
+    int *flowsArrayLength = args->length;
+    int *packetCount = args->count;
+
+    printf("flowsArrayLength = %d\n", *flowsArrayLength);
 
     // ETHERNET HEADER
     struct ether_header *ethHeader = (struct ether_header *)packet;
@@ -65,11 +64,16 @@ void packetHandler(u_char *userData, const struct pcap_pkthdr *header, const u_c
     }
 }
 
-void loopFile(pcap_t *pcapHandle)
+void loopFile(pcap_t *pcapHandle, flow_t *allFlowsArray, int *allFlowsArrayLength)
 {
     int packetCount = 0;
 
-    if (pcap_loop(pcapHandle, 0, packetHandler, (u_char *)&packetCount) == -1)
+    packetHandlerArgs_t args;
+    args.array = allFlowsArray;
+    args.length = allFlowsArrayLength;
+    args.count = &packetCount;
+
+    if (pcap_loop(pcapHandle, 0, packetHandler, (u_char *)&args) == -1)
     {
         fprintf(stderr, "ERROR: processing packets: %s\n", pcap_geterr(pcapHandle));
         return;
@@ -77,3 +81,4 @@ void loopFile(pcap_t *pcapHandle)
 
     printf("TCP packets count: %d\n", packetCount);
 }
+ */
