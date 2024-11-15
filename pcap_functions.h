@@ -2,6 +2,8 @@
 
 pcap_t *createHandle(const char *file);
 
+void closeHandle(pcap_t *pcapHandle);
+
 void loopFile(pcap_t *pcapHandle);
 
 void packetHandler(u_char *userData, const struct pcap_pkthdr *header, const u_char *packet);

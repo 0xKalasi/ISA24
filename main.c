@@ -18,9 +18,10 @@ int main(int argc, char *argv[])
     config = parseArgs(argc, argv);
 
     pcapHandle = createHandle(config.pcapFilePath);
-    printf("Handle succesfully created.\n");
 
     loopFile(pcapHandle);
+
+    closeHandle(pcapHandle);
 
     return 0;
 }
