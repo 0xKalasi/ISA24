@@ -7,10 +7,10 @@
 typedef struct
 {
     char host[MAX_HOSTS];
-    char *pcap_file_path;
+    char *pcapFilePath;
     int port;
-    int active_timout;
-    int inactive_timout;
+    int activeTimout;
+    int inactiveTimout;
 } config_t;
 
 void printUsage(int error);

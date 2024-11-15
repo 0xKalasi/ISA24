@@ -31,11 +31,12 @@ config_t parseArgs(int argc, char *argv[])
     config_t config;
 
     // DEFAULT VALUES
-    config.active_timout = 60;
-    config.inactive_timout = 60;
+    config.activeTimout = 60;
+    config.inactiveTimout = 60;
 
+    // so I can then check if it was parsed
     config.port = -1;
-    config.pcap_file_path = NULL;
+    config.pcapFilePath = NULL;
 
     char host[MAX_HOSTS];
     int port;
@@ -48,21 +49,21 @@ config_t parseArgs(int argc, char *argv[])
 
         else if (strcmp(argv[i], "-a") == 0 && i + 1 < argc)
         {
-            config.active_timout = atoi(argv[++i]);
-            if (config.active_timout <= 0)
+            config.activeTimout = atoi(argv[++i]);
+            if (config.activeTimout < 0)
             {
-                fprintf(stderr, "Error: -a <active_timeout> must be a number greater than 0. Use -h for usage.\n");
-                exit(1);
+                fprintf(stderr, "ERROR: -a <active_timeout> must be a number greater than 0. Use -h for usage.\n");
+                exit(ERROR);
             }
         }
 
         else if (strcmp(argv[i], "-i") == 0 && i + 1 < argc)
         {
-            config.inactive_timout = atoi(argv[++i]);
-            if (config.inactive_timout <= 0)
+            config.inactiveTimout = atoi(argv[++i]);
+            if (config.inactiveTimout < 0)
             {
-                fprintf(stderr, "Error: -i <inactive_timeout> must be a number greater than 0. Use -h for usage.\n");
-                exit(1);
+                fprintf(stderr, "ERROR: -i <inactive_timeout> must be a number greater than 0. Use -h for usage.\n");
+                exit(ERROR);
             }
         }
 
@@ -73,7 +74,7 @@ config_t parseArgs(int argc, char *argv[])
 
             if (port > 65535 || port < 0)
             {
-                fprintf(stderr, "Error: <port> needs to be in range of 0 to 65535. Use -h for usage.\n");
+                fprintf(stderr, "ERROR: <port> needs to be in range of 0 to 65535. Use -h for usage.\n");
                 exit(1);
             }
             else
@@ -81,25 +82,25 @@ config_t parseArgs(int argc, char *argv[])
         }
 
         // <pcap_file_path>
-        else if (config.pcap_file_path == NULL)
-            config.pcap_file_path = argv[i];
+        else if (!config.pcapFilePath)
+            config.pcapFilePath = argv[i];
 
         else
             printUsage(ERROR);
     }
 
     // check mandatory arguments
-    if (config.pcap_file_path == NULL || config.port == -1)
+    if (!config.pcapFilePath || config.port == -1)
     {
-        fprintf(stderr, "Error: arguments <file> and <host>:<port> are mandatory\n");
-        exit(1);
+        fprintf(stderr, "ERROR: arguments <file> and <host>:<port> are mandatory\n");
+        exit(ERROR);
     }
 
     printf("config.host: '%s'\n", config.host);
     printf("config.port: '%d'\n", config.port);
-    printf("config.pcap_file_path: '%s'\n", config.pcap_file_path);
-    printf("config.active_timeout = %d\n", config.active_timout);
-    printf("config.inactive_timeout = %d\n", config.inactive_timout);
+    printf("config.pcap_file_path: '%s'\n", config.pcapFilePath);
+    printf("config.active_timeout = %d\n", config.activeTimout);
+    printf("config.inactive_timeout = %d\n", config.inactiveTimout);
 
     return config;
 }
