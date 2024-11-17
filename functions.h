@@ -9,8 +9,8 @@ typedef struct
     char host[MAX_HOSTS];
     char *pcapFilePath;
     int port;
-    int activeTimout;
-    int inactiveTimout;
+    int activeTimeout;
+    int inactiveTimeout;
 } config_t;
 
 void printUsage(int error);

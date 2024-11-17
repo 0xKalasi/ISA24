@@ -14,7 +14,7 @@ void printUsage(int error)
         printf("Usage: ./p2nprobe <host>:<port> <pcap_file_path> [-a <active_timeout> -i <inactive_timeout> -h]\n\n");
         printf("    <host> -> IP address or domain name of collector\n");
         printf("    <port> -> collector port (range 0 to 65535)\n");
-        printf("    <active_timout> -> number of seconds to set as active timeout for the flow export (default value is 60)\n");
+        printf("    <active_timeout> -> number of seconds to set as active timeout for the flow export (default value is 60)\n");
         printf("    <inactive_timeout> -> number of seconds to set as inactive timeout for the flow export (default value is 60)\n");
 
         exit(0);
@@ -31,8 +31,8 @@ config_t parseArgs(int argc, char *argv[])
     config_t config;
 
     // DEFAULT VALUES
-    config.activeTimout = 60;
-    config.inactiveTimout = 60;
+    config.activeTimeout = 60;
+    config.inactiveTimeout = 60;
 
     // so I can then check if it was parsed
     config.port = -1;
@@ -49,8 +49,8 @@ config_t parseArgs(int argc, char *argv[])
 
         else if (strcmp(argv[i], "-a") == 0 && i + 1 < argc)
         {
-            config.activeTimout = atoi(argv[++i]);
-            if (config.activeTimout < 0)
+            config.activeTimeout = atoi(argv[++i]);
+            if (config.activeTimeout <= 0)
             {
                 fprintf(stderr, "ERROR: -a <active_timeout> must be a number greater than 0. Use -h for usage.\n");
                 exit(ERROR);
@@ -59,8 +59,8 @@ config_t parseArgs(int argc, char *argv[])
 
         else if (strcmp(argv[i], "-i") == 0 && i + 1 < argc)
         {
-            config.inactiveTimout = atoi(argv[++i]);
-            if (config.inactiveTimout < 0)
+            config.inactiveTimeout = atoi(argv[++i]);
+            if (config.inactiveTimeout <= 0)
             {
                 fprintf(stderr, "ERROR: -i <inactive_timeout> must be a number greater than 0. Use -h for usage.\n");
                 exit(ERROR);
@@ -99,8 +99,8 @@ config_t parseArgs(int argc, char *argv[])
     printf("config.host: '%s'\n", config.host);
     printf("config.port: '%d'\n", config.port);
     printf("config.pcap_file_path: '%s'\n", config.pcapFilePath);
-    printf("config.active_timeout = %d\n", config.activeTimout);
-    printf("config.inactive_timeout = %d\n", config.inactiveTimout);
+    printf("config.active_timeout = %d\n", config.activeTimeout);
+    printf("config.inactive_timeout = %d\n", config.inactiveTimeout);
 
     return config;
 }
