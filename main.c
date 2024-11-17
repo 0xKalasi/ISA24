@@ -86,6 +86,8 @@ void updateFlow(packet_t packet, flow_t *existingFlow)
 
 void exportFlows()
 {
+    exportedCount += flowsToExportLength;
+
     printf("Exporting %d flows:\n", flowsToExportLength);
     for (int i = 0; i < flowsToExportLength; i++)
     {
@@ -211,7 +213,7 @@ void packetHandler(u_char *userData, const struct pcap_pkthdr *header, const u_c
             // read ports from TCP header and byte length from pcap header
             currentPacket.srcPORT = ntohs(tcpHeader->th_sport);
             currentPacket.destPORT = ntohs(tcpHeader->th_dport);
-            currentPacket.bytes = header->len;
+            currentPacket.bytes = ntohs(ipHeader->ip_len);
             currentPacket.timestamp = header->ts;
 
             /* printf("Packet %d: %s:%d -> %s:%d, Length %d bytes\n", *packetCount, srcIP, srcPort, dstIP, dstPort, byteLength); */
@@ -260,6 +262,8 @@ int main(int argc, char *argv[])
     /* LOOP */
 
     exportRemaining();
+
+    printf("Exported %d flows\n", exportedCount);
 
     closeHandle(pcapHandle);
 
