@@ -7,7 +7,8 @@
 
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
-#include <netinet/ether.h>
+#include <netinet/if_ether.h> // FOR MAC ONLY
+/* #include <netinet/ether.h> // struct ether_header */
 #include <arpa/inet.h>
 
 /* typedef struct
