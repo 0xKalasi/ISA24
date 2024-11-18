@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -std=c99 -D_DEFAULT_SOURCE
 TARGET = p2nprobe
 
 # SOURCE .c FILES #
-SRC = main.c functions.c pcap_functions.c
+SRC = main.c common.c export_functions.c flow_functions.c pcap_functions.c 
 
 # EVERY .c FILE, BUT NOW WITH .o EXTENSION #
 OBJ = $(SRC:.c=.o) 

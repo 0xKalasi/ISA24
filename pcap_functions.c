@@ -1,4 +1,9 @@
 #include "pcap_functions.h"
+#include "flow_functions.h"
+#include "export_functions.h"
+
+extern flow_t *flows;
+extern int flowsLength;
 
 pcap_t *createHandle(const char *file)
 {
@@ -19,16 +24,12 @@ void closeHandle(pcap_t *pcapHandle)
     pcap_close(pcapHandle);
 }
 
-/*
 void packetHandler(u_char *userData, const struct pcap_pkthdr *header, const u_char *packet)
 {
-    packetHandlerArgs_t *args = (packetHandlerArgs_t *)userData;
-
-    flow_t *flowsArray = args->array;
-    int *flowsArrayLength = args->length;
-    int *packetCount = args->count;
-
-    printf("flowsArrayLength = %d\n", *flowsArrayLength);
+    // warning psst
+    if (userData)
+    {
+    }
 
     // ETHERNET HEADER
     struct ether_header *ethHeader = (struct ether_header *)packet;
@@ -41,44 +42,44 @@ void packetHandler(u_char *userData, const struct pcap_pkthdr *header, const u_c
         // IN IP HEADER PROTOCOL FIELD (ip.proto)
         if (ipHeader->ip_p == IPPROTO_TCP)
         {
-            (*packetCount)++;
 
-            // variables to store IPv4 addresses
-            char srcIP[INET_ADDRSTRLEN];
-            char dstIP[INET_ADDRSTRLEN];
+            packet_t currentPacket;
 
-            // read IPv4 addresses from ip header and store them
-            inet_ntop(AF_INET, &(ipHeader->ip_src), srcIP, INET_ADDRSTRLEN);
-            inet_ntop(AF_INET, &(ipHeader->ip_dst), dstIP, INET_ADDRSTRLEN);
+            // read IPv4 addresses from ip header
+            inet_ntop(AF_INET, &(ipHeader->ip_src), currentPacket.srcIP, INET_ADDRSTRLEN);
+            inet_ntop(AF_INET, &(ipHeader->ip_dst), currentPacket.destIP, INET_ADDRSTRLEN);
 
             // move to TCP header
             struct tcphdr *tcpHeader = (struct tcphdr *)(packet + sizeof(struct ether_header) + sizeof(struct ip));
 
             // read ports from TCP header
-            uint16_t srcPort = ntohs(tcpHeader->th_sport);
-            uint16_t dstPort = ntohs(tcpHeader->th_dport);
-            int byteLength = header->len;
+            // byte length from IP header
+            // timestamp from pcap header (frame)
+            currentPacket.srcPORT = ntohs(tcpHeader->th_sport);
+            currentPacket.destPORT = ntohs(tcpHeader->th_dport);
+            currentPacket.bytes = ntohs(ipHeader->ip_len);
+            currentPacket.timestamp = header->ts;
 
-            printf("Packet %d: %s:%d -> %s:%d, Length %d bytes\n", *packetCount, srcIP, srcPort, dstIP, dstPort, byteLength);
+            /* printf("Packet %d: %s:%d -> %s:%d, Length %d bytes\n", *packetCount, srcIP, srcPort, dstIP, dstPort, byteLength); */
+
+            checkTimeouts(currentPacket);
+
+            bool flowFound = false;
+            for (int i = 0; i < flowsLength; i++)
+            {
+                flow_t *existingFlow = &flows[i];
+
+                // compare if packet belongs to flow
+                if (flowMatchPacket(existingFlow, &currentPacket))
+                {
+                    updateFlow(currentPacket, existingFlow);
+                    flowFound = 1;
+                    break;
+                }
+            }
+
+            if (!flowFound)
+                addFlow(currentPacket);
         }
     }
 }
-
-void loopFile(pcap_t *pcapHandle, flow_t *allFlowsArray, int *allFlowsArrayLength)
-{
-    int packetCount = 0;
-
-    packetHandlerArgs_t args;
-    args.array = allFlowsArray;
-    args.length = allFlowsArrayLength;
-    args.count = &packetCount;
-
-    if (pcap_loop(pcapHandle, 0, packetHandler, (u_char *)&args) == -1)
-    {
-        fprintf(stderr, "ERROR: processing packets: %s\n", pcap_geterr(pcapHandle));
-        return;
-    }
-
-    printf("TCP packets count: %d\n", packetCount);
-}
- */

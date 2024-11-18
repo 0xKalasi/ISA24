@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <ctype.h>
 #include <string.h>
 #include <getopt.h>
 
-#include "functions.h"
+#include "common.h"
 
 void printUsage(int error)
 {
@@ -38,7 +36,7 @@ config_t parseArgs(int argc, char *argv[])
     config.port = -1;
     config.pcapFilePath = NULL;
 
-    char host[MAX_HOSTS];
+    char host[256];
     int port;
 
     // go through all of arguments, because for some reason the way I used getopt and optind didnt work on merlin (BSD linux), I work on mac
@@ -96,11 +94,11 @@ config_t parseArgs(int argc, char *argv[])
         exit(ERROR);
     }
 
-    printf("config.host: '%s'\n", config.host);
+    /* printf("config.host: '%s'\n", config.host);
     printf("config.port: '%d'\n", config.port);
     printf("config.pcap_file_path: '%s'\n", config.pcapFilePath);
     printf("config.active_timeout = %d\n", config.activeTimeout);
-    printf("config.inactive_timeout = %d\n", config.inactiveTimeout);
+    printf("config.inactive_timeout = %d\n", config.inactiveTimeout); */
 
     return config;
 }
