@@ -1,7 +1,13 @@
+/*
+    [ISA project] - PCAP NetFlow v5 exporter (p2nprobe)
+    Date: 18.11.2024
+
+    Author: Tomáš Bordák [xborda01]
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <getopt.h>
 
 #include "common.h"
 
@@ -93,12 +99,6 @@ config_t parseArgs(int argc, char *argv[])
         fprintf(stderr, "ERROR: arguments <file> and <host>:<port> are mandatory\n");
         exit(ERROR);
     }
-
-    /* printf("config.host: '%s'\n", config.host);
-    printf("config.port: '%d'\n", config.port);
-    printf("config.pcap_file_path: '%s'\n", config.pcapFilePath);
-    printf("config.active_timeout = %d\n", config.activeTimeout);
-    printf("config.inactive_timeout = %d\n", config.inactiveTimeout); */
 
     return config;
 }

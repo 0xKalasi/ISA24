@@ -1,7 +1,17 @@
+/*
+    [ISA project] - PCAP NetFlow v5 exporter (p2nprobe)
+    Date: 18.11.2024
+
+    Author: Tomáš Bordák [xborda01]
+*/
+
 #ifndef STRUCTURES_H
 #include <netinet/ip.h> // INET_ADDRSTRLEN
-#include <unistd.h> 
+#include <unistd.h>
 
+/*
+    program arguments structure
+*/
 typedef struct
 {
     char host[256];
@@ -11,6 +21,9 @@ typedef struct
     int inactiveTimeout;
 } config_t;
 
+/*
+    structure for each flow
+*/
 typedef struct
 {
     char srcIP[INET_ADDRSTRLEN];
@@ -23,6 +36,9 @@ typedef struct
     struct timeval last;
 } flow_t;
 
+/*
+    almost the same as flow_t, but for packet data that are needed to create a new flow or update existing one
+*/
 typedef struct
 {
     char srcIP[INET_ADDRSTRLEN];
@@ -33,10 +49,12 @@ typedef struct
     struct timeval timestamp;
 } packet_t;
 
-// NETFLOW v5 HEADER FORMAT
-// variable type based on how many bytes header field needs
-// https://www.cisco.com/c/en/us/td/docs/net_mgmt/netflow_collection_engine/3-6/user/guide/format.html#wp1006108 [16.11.2024]
-// sum: 24 bytes
+/*
+    NETFLOW v5 HEADER FORMAT
+    variable type based on how many bytes header field needs
+    https://www.cisco.com/c/en/us/td/docs/net_mgmt/netflow_collection_engine/3-6/user/guide/format.html#wp1006108 [16.11.2024]
+    sum: 24 bytes
+*/
 typedef struct
 {
     uint16_t version;       // version 5
@@ -51,9 +69,11 @@ typedef struct
 
 } NetFlow_v5_header_t;
 
-// NETFLOW v5 FLOW RECORD FORMAT
-// sum: 48 bytes
-// https://www.cisco.com/c/en/us/td/docs/net_mgmt/netflow_collection_engine/3-6/user/guide/format.html#wp1006186 [16.11.2024]
+/*
+    NETFLOW v5 FLOW RECORD FORMAT
+    https://www.cisco.com/c/en/us/td/docs/net_mgmt/netflow_collection_engine/3-6/user/guide/format.html#wp1006186 [16.11.2024]
+    sum: 48 bytes
+*/
 typedef struct
 {
     uint32_t srcaddr; // source IP addr

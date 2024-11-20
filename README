@@ -1,0 +1,61 @@
+Author: Tomáš Bordák [xborda01]
+Date: 18.11.2024
+
+Description:
+
+    PCAP to NetFlow v5 exporter written in C
+
+    Program goes through every packet in pcap file, processes the packet headers and then manages
+    to create a new flow or if packet is matching existing flow, it updates the existing flow with packet
+    data. Processes ONLY TCP packets, ignores rest. Flows can expire only if active or inactive timeout is greater or equal to active_timout or inactive_timeout (default 60 seconds).
+    Also if any flow doesnt expire when program is reading pcap file, after all packets, rest of flows get automatically exported.
+    
+    Program uses UDP to send (export) flows to collector. Sends UDP datagram with NetFlow v5 header and 30 NetFlow v5 flow records.
+    30 is maximum per datagram. Only when the program is exporting the rest of flows, datagram can include <= 30 per datagram (if there is
+    40 flows left -> first datagram with 30 flows and second with 10 flows, maximazing the datagram potential).
+    
+
+How to use:
+
+    make
+
+    ./p2nprobe <host>:<port> <pcap_file_path> [-a <active_timeout> -i <inactive_timeout> -h]
+
+            <host>:<port> - host has to be either IPv4 address or hostname, that will get resolved to IPv4 address
+                          - port has to be a number in range of 0 to 65535
+                          - IS MANDATORY
+                          - NO SUPPORT FOR IPv6 HOST
+
+            <pcap_file_path> - path to file (enter just a file name, when the file is in the same directory)
+                             - IS MANDATORY
+            
+            -a <active_timeout> - number of seconds to set the active timeout of the flow export
+                                - DEFAULT 60
+            
+            -i <inactive_timeout> - number of seconds to set the inactive timeout of the flow export
+                                  - DEFAULT 60
+
+            -h - prints usage with detail description of options
+
+
+Example use:
+
+    ./p2nprobe localhost:2055 test_pcap_files/druhy_pcap.pcap 
+
+    
+List of submitted files:
+    
+                common.c
+                common.h    
+                export_functions.c
+                export_functions.h
+                flow_functions.c
+                flow_functions.h
+                main.c
+                Makefile
+                pcap_functions.c
+                pcap_functions.h
+                README
+                structures.h
+                manual.pdf
+

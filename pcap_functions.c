@@ -1,3 +1,10 @@
+/*
+    [ISA project] - PCAP NetFlow v5 exporter (p2nprobe)
+    Date: 18.11.2024
+
+    Author: Tomáš Bordák [xborda01]
+*/
+
 #include "pcap_functions.h"
 #include "flow_functions.h"
 #include "export_functions.h"
@@ -59,8 +66,6 @@ void packetHandler(u_char *userData, const struct pcap_pkthdr *header, const u_c
             currentPacket.destPORT = ntohs(tcpHeader->th_dport);
             currentPacket.bytes = ntohs(ipHeader->ip_len);
             currentPacket.timestamp = header->ts;
-
-            /* printf("Packet %d: %s:%d -> %s:%d, Length %d bytes\n", *packetCount, srcIP, srcPort, dstIP, dstPort, byteLength); */
 
             checkTimeouts(currentPacket);
 

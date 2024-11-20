@@ -1,3 +1,10 @@
+/*
+    [ISA project] - PCAP NetFlow v5 exporter (p2nprobe)
+    Date: 18.11.2024
+
+    Author: Tomáš Bordák [xborda01]
+*/
+
 #ifndef FUNCTIONS_H
 
 #include "structures.h"

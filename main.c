@@ -1,3 +1,10 @@
+/*
+    [ISA project] - PCAP NetFlow v5 exporter (p2nprobe)
+    Date: 18.11.2024
+
+    Author: Tomáš Bordák [xborda01]
+*/
+
 #include <stdio.h>
 #include <pcap/pcap.h>
 #include <unistd.h>
@@ -7,8 +14,7 @@
 #include "pcap_functions.h"
 
 // GLOBAL VARIABLES
-// use extern <type> <variableName>; to use in other .c files
-// https://stackoverflow.com/questions/6792930/how-do-i-share-a-global-variable-between-c-files
+// extern <type> <variableName>; to use in other .c files
 config_t config;
 
 flow_t flowsToExport[30];
@@ -26,8 +32,8 @@ int sequenceCount = 0;
 
 int main(int argc, char *argv[])
 {
+    // boot time ("export device booted time")
     gettimeofday(&bootTime, NULL);
-    /* printf("bootTime = %ld.%ld\n", bootTime.tv_sec, bootTime.tv_usec); */
 
     pcap_t *pcapHandle;
 
@@ -44,8 +50,6 @@ int main(int argc, char *argv[])
     }
 
     exportRemaining();
-
-    /* printf("Exported %d flows\n", sequenceCount); */
 
     closeHandle(pcapHandle);
     close(socketDescriptor);

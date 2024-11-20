@@ -1,3 +1,10 @@
+/*
+    [ISA project] - PCAP NetFlow v5 exporter (p2nprobe)
+    Date: 18.11.2024
+
+    Author: Tomáš Bordák [xborda01]
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,9 +33,7 @@ extern config_t config;
 
 void exportFlows()
 {
-    /* printf("sequenceCount = %d\n", sequenceCount); */
-
-    uint8_t netFlowPacket[1470]; // 24 + (48 x 30) =  1 464
+    uint8_t netFlowPacket[1470]; // 24 + (48 x 30) =  1 464 bytes
     int byteOffset = 0;
 
     // first we create header for packet
@@ -83,19 +88,6 @@ void exportFlows()
         // flow record length is 48 bytes
         memcpy(netFlowPacket + byteOffset, &flowRecord, 48);
         byteOffset += 48;
-
-        /* printf("Flow %d: %s:%d -> %s:%d, packets: %d, bytes: %d, first: %ld.%ld, last: %ld.%ld\n",
-                i + 1,
-                flow->srcIP,
-                flow->srcPORT,
-                flow->destIP,
-                flow->destPORT,
-                flow->packetCount,
-                flow->bytesCount,
-                flow->first.tv_sec,
-                flow->first.tv_usec,
-                flow->last.tv_sec,
-                flow->last.tv_usec); */
     }
 
     ssize_t bytesSent = sendto(socketDescriptor, netFlowPacket, byteOffset, 0, (struct sockaddr *)&collector, sizeof(collector));
@@ -104,8 +96,6 @@ void exportFlows()
         fprintf(stderr, "Error: sending NetFlow packet failed. Check if <host:port> is correct.\n");
         exit(1);
     }
-    /* else
-        printf("Succesfully sent %ld bytes to collector.\n", bytesSent); */
 
     flowsToExportLength = 0;
 }
@@ -135,12 +125,7 @@ void exportRemaining()
         moveToExport(i);
 
     if (flowsToExportLength > 0)
-    {
-        /* printf("Exporting remaining %d flows:\n", flowsToExportLength); */
         exportFlows();
-    }
-    /* else
-    printf("No remaining flows to export.\n"); */
 }
 
 void initCollector()
